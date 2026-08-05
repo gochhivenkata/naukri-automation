@@ -2,8 +2,8 @@ import os
 import sys
 
 # Read credentials from GitHub Secrets
-EMAIL = os.getenv("NAUKRI_EMAIL")
-PASSWORD = os.getenv("NAUKRI_PASSWORD")
+EMAIL = os.getenv("venkata.gochhi@gmail.com")
+PASSWORD = os.getenv("Ril$54321")
 
 if not EMAIL:
     print("ERROR: NAUKRI_EMAIL is not set.")
