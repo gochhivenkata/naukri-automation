@@ -1,0 +1,28 @@
+name: Naukri Automation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-naukri:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Selenium
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Naukri script
+        env:
+          NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
+          NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
+        run: |
+          python naukri.py
