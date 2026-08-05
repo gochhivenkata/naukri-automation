@@ -20,6 +20,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      # 👇 ADD THIS STEP
+      - name: Debug GitHub Secrets
+        env:
+          NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
+          NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
+        run: |
+          echo "EMAIL LENGTH: ${#NAUKRI_EMAIL}"
+          echo "PASSWORD LENGTH: ${#NAUKRI_PASSWORD}"
+
+      # 👇 EXISTING STEP
       - name: Run Naukri script
         env:
           NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
