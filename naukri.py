@@ -1,21 +1,32 @@
 import os
 import sys
 
-# Read credentials from GitHub Secrets
-EMAIL = os.getenv("venkata.gochhi@gmail.com")
-PASSWORD = os.getenv("Ril$54321")
+print("=" * 50)
+print("GitHub Actions Environment Variable Debug")
+print("=" * 50)
 
-if not EMAIL:
-    print("ERROR: NAUKRI_EMAIL is not set.")
+email = os.getenv("NAUKRI_EMAIL")
+password = os.getenv("NAUKRI_PASSWORD")
+
+print(f"NAUKRI_EMAIL: {repr(email)}")
+print(f"NAUKRI_PASSWORD: {'SET' if password else 'NOT SET'}")
+
+print("\nEnvironment variables containing 'NAUKRI':")
+for key, value in os.environ.items():
+    if "NAUKRI" in key.upper():
+        if "PASSWORD" in key.upper():
+            print(f"{key} = ********")
+        else:
+            print(f"{key} = {value}")
+
+print("=" * 50)
+
+if not email:
+    print("❌ ERROR: NAUKRI_EMAIL is not set.")
     sys.exit(1)
 
-if not PASSWORD:
-    print("ERROR: NAUKRI_PASSWORD is not set.")
+if not password:
+    print("❌ ERROR: NAUKRI_PASSWORD is not set.")
     sys.exit(1)
 
-# Resume path
-RESUME_PATH = os.path.abspath("resume/Venkata_4_YOE+.docx")
-
-if not os.path.exists(RESUME_PATH):
-    print(f"ERROR: Resume not found: {RESUME_PATH}")
-    sys.exit(1)
+print("✅ Both secrets are available.")
