@@ -22,7 +22,7 @@ jobs:
 
       - name: Run Naukri script
         env:
-          NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
-          NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
+          NAUKRI_EMAIL: ${{ secrets.venkata.gochhi@gmail.com }}
+          NAUKRI_PASSWORD: ${{ secrets.Ril$54321 }}
         run: |
           python naukri.py
