@@ -2,30 +2,30 @@ name: Upload Resume to Naukri
 
 on:
   schedule:
-    - cron: "30 2 * * *"   # 8:00 AM IST
+    - cron: '30 2 * * *'   # 8:00 AM IST
   workflow_dispatch:
 
 jobs:
   upload:
     runs-on: ubuntu-latest
 
-    env:
-      NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
-      NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Chrome
-        uses: browser-actions/setup-chrome@v1
-
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium
 
-      - name: Upload Resume
+      - name: Run script
+        env:
+          NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
+          NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
         run: python naukri.py
