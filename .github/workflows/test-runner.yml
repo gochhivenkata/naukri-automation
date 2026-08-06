@@ -11,7 +11,7 @@ jobs:
       - ARM64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Show System Information
         run: |
