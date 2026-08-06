@@ -1,75 +1,58 @@
+from playwright.sync_api import sync_playwright
 import os
 import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import glob
 
+# Read credentials from GitHub Secrets / Environment Variables
 EMAIL = os.getenv("NAUKRI_EMAIL")
 PASSWORD = os.getenv("NAUKRI_PASSWORD")
-RESUME_PATH = os.path.abspath("resume.pdf")   # Resume in repository
 
 if not EMAIL or not PASSWORD:
-    raise Exception("GitHub Secrets are missing.")
+    raise Exception("NAUKRI_EMAIL or NAUKRI_PASSWORD environment variable is missing.")
 
-print("Starting browser...")
+# Find the resume automatically
+resume_files = glob.glob("resume/*.docx")
 
-options = Options()
-options.add_argument("--headless=new")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+if not resume_files:
+    raise Exception("No resume file found inside the 'resume' folder.")
 
-driver = webdriver.Chrome(options=options)
-wait = WebDriverWait(driver, 30)
+RESUME_PATH = os.path.abspath(resume_files[0])
 
-try:
+print(f"Uploading Resume: {RESUME_PATH}")
+
+with sync_playwright() as p:
+
+    browser = p.chromium.launch(
+        headless=True
+    )
+
+    page = browser.new_page()
+
     # Open Login Page
-    driver.get("https://www.naukri.com/nlogin/login")
+    page.goto("https://www.naukri.com/nlogin/login", timeout=60000)
 
-    # Login
-    wait.until(EC.presence_of_element_located((By.ID, "usernameField"))).send_keys(EMAIL)
-    driver.find_element(By.ID, "passwordField").send_keys(PASSWORD)
+    page.fill('input[type="text"]', EMAIL)
+    page.fill('input[type="password"]', PASSWORD)
 
-    driver.find_element(By.XPATH, "//button[@type='submit']").click()
+    page.click('button[type="submit"]')
 
-    print("Logged in...")
+    page.wait_for_load_state("networkidle")
 
-    # Wait until profile page is available
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(@class,'view-profile-wrapper')]")
-        )
+    print("Login Successful")
+
+    # Open Profile Page
+    page.goto("https://www.naukri.com/mnjuser/profile", timeout=60000)
+
+    page.wait_for_timeout(5000)
+
+    # Upload Resume
+    page.set_input_files(
+        'input[type="file"]',
+        RESUME_PATH
     )
 
-    # Open profile page
-    driver.get("https://www.naukri.com/mnjuser/profile")
+    print("Resume Uploaded Successfully")
 
-    print("Opening profile...")
+    page.wait_for_timeout(8000)
 
-    # Wait for Upload Resume button
-    upload = wait.until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//input[@type='file']"
-            )
-        )
-    )
-
-    upload.send_keys(RESUME_PATH)
-
-    print("Uploading resume...")
-
-    time.sleep(10)
-
-    print("✅ Resume uploaded successfully!")
-
-except Exception as e:
-    print("Upload failed")
-    print(e)
-    driver.save_screenshot("error.png")
-    raise
-
-finally:
-    driver.quit()
+    browser.close()
