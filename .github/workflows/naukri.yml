@@ -1,50 +1,22 @@
-name: Naukri Resume Upload
+name: Test Self Hosted Runner
 
 on:
-
-  schedule:
-    - cron: "30 2 * * *"
-
   workflow_dispatch:
 
-
 jobs:
-
-  upload-resume:
-
-    runs-on: ubuntu-latest
-
-
-    env:
-
-      NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
-
-      NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
-
+  test:
+    runs-on:
+      - self-hosted
+      - macOS
+      - ARM64
 
     steps:
+      - uses: actions/checkout@v4
 
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-
-    - name: Setup Python
-      uses: actions/setup-python@v5
-
-      with:
-
-        python-version: "3.11"
-
-
-    - name: Install dependencies
-      run: |
-
-        pip install -r requirements.txt
-
-        playwright install chromium
-
-
-    - name: Upload Resume
-      run: |
-
-        python naukri.py
+      - name: Test Runner
+        run: |
+          echo "Runner is working!"
+          hostname
+          whoami
+          pwd
+          python3 --version
