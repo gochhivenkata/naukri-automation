@@ -17,7 +17,7 @@ if not EMAIL or not PASSWORD:
 # -----------------------------
 # Resume Path
 # -----------------------------
-RESUME_PATH = "resume.pdf"
+RESUME_PATH = "resume/Venkata_4_YOE+.docx"
 
 if not os.path.exists(RESUME_PATH):
     print("❌ Resume file not found")
