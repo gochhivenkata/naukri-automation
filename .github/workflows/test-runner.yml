@@ -1,0 +1,22 @@
+name: Test Self Hosted Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on:
+      - self-hosted
+      - macOS
+      - ARM64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show System Information
+        run: |
+          echo "Runner is working!"
+          hostname
+          whoami
+          pwd
+          python3 --version
