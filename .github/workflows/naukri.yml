@@ -2,7 +2,7 @@ name: Upload Resume to Naukri
 
 on:
   schedule:
-    - cron: "0 12 * * *"   # 5:30 PM IST
+    - cron: "0 12 * * *"    # 5:30 PM IST
   workflow_dispatch:
 
 jobs:
@@ -13,17 +13,33 @@ jobs:
       - ARM64
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      - name: Verify Environment
+        run: |
+          echo "Current User:"
+          whoami
+          echo "Current Directory:"
+          pwd
+          echo "Python Location:"
+          which python3
+          python3 --version
+          pip3 --version
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -r requirements.txt
-          playwright install chromium
+          python3 -m pip install -r requirements.txt
+          python3 -m playwright install chromium
 
-      - name: Upload Resume
+      - name: Verify Playwright
+        run: |
+          python3 -m playwright --version
+
+      - name: Run Naukri Resume Upload
         env:
           NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
           NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
-        run: python3 naukri.py
+        run: |
+          python3 naukri.py
