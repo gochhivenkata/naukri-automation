@@ -48,6 +48,10 @@ with sync_playwright() as p:
             wait_until="networkidle",
             timeout=60000
         )
+        print(page.title())
+print(page.url)
+print(page.content()[:1000])
+page.screenshot(path="access_denied.png", full_page=True)
 
         page.screenshot(path="login_page.png", full_page=True)
 
