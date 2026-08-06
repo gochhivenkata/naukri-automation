@@ -28,4 +28,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Upload Resume
-        run: python upload_resume.py
+        run: python naukri.py
